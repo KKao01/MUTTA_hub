@@ -72,7 +72,7 @@ function closeModal(e) {
 function goMode(mode) {
   const urls = {
     supermarket: 'https://muttasupermarket-production.up.railway.app',
-    sf: 'https://mutta-sf.up.railway.app'  // 順豐之後再填
+    sf: 'https://muttasf-production.up.railway.app'
   };
   const url = urls[mode] || '/';
   window.open(url, '_blank');
