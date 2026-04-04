@@ -1,0 +1,30 @@
+{
+  "password_hash": "ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270",
+  "links": [
+    {
+      "label": "MeepShop 後台",
+      "url": "https://admin.meepshop.tw/",
+      "sub": "admin.meepshop.tw"
+    },
+    {
+      "label": "順豐寄件",
+      "url": "https://www.sf-express.com",
+      "sub": "www.sf-express.com"
+    }
+  ],
+  "gallery": [
+    "/gallery/gallery_0.png",
+    "/gallery/gallery_1.png",
+    "/gallery/gallery_2.png",
+    "/gallery/gallery_3.png",
+    "/gallery/gallery_4.png",
+    "/gallery/gallery_5.png",
+    "/gallery/gallery_6.png",
+    "/gallery/gallery_7.png",
+    "/gallery/gallery_8.png"
+  ],
+  "ports": {
+    "supermarket": 8000,
+    "sf": 8001
+  }
+}

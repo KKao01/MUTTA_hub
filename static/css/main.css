@@ -1,0 +1,172 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans TC', -apple-system, 'Microsoft JhengHei', sans-serif;
+  background: #EDE9DC;
+  color: #1A1A12;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.header {
+  background: #1A1A12;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 14px; cursor: default; user-select: none; }
+.header-title { font-size: 15px; font-weight: 500; color: #E2DDD0; letter-spacing: .1em; }
+.header-subtitle { font-size: 8px; letter-spacing: .16em; color: #5C5A48; margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.online-dot { width: 6px; height: 6px; background: #A3BE5A; border-radius: 50%; }
+.online-label { font-size: 9px; color: #6A6858; letter-spacing: .1em; }
+.clock { font-size: 10px; color: #6A6858; letter-spacing: .04em; font-variant-numeric: tabular-nums; margin-left: 4px; }
+
+/* ── Body ── */
+.body-wrap {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  background: #EDE9DC;
+  border-right: 0.5px solid #D4CFBF;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+/* ── Module Card (分單系統) ── */
+.module-card {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 0.5px solid #C8C4B4;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  flex-shrink: 0;
+}
+.module-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+
+.card-cover {
+  position: relative;
+  height: 155px;
+  overflow: hidden;
+}
+.cover-green {
+  position: absolute; inset: 0;
+  background: #007840;
+}
+.cover-red {
+  position: absolute; inset: 0;
+  background: #C0392B;
+  clip-path: polygon(45% 0%, 100% 0%, 100% 100%, 20% 100%);
+}
+.badge-711 { position: absolute; top: 10px; left: 10px; }
+.card-center-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px;
+}
+.card-title { font-size: 17px; font-weight: 500; color: #fff; letter-spacing: .04em; }
+.card-sub   { font-size: 8px; letter-spacing: .14em; color: rgba(255,255,255,0.5); }
+
+.badge-sf {
+  position: absolute; bottom: 10px; right: 10px;
+  display: inline-flex; align-items: center; border-radius: 4px; overflow: hidden;
+}
+.sf-red  { background: #CC2020; padding: 3px 6px; font-size: 8px; font-weight: 900; color: #fff; letter-spacing: .04em; }
+.sf-gray { background: #555555; padding: 3px 8px; font-size: 8px; color: #E0E0E0; letter-spacing: .06em; }
+
+/* ── Coming Soon ── */
+.coming-card {
+  border-radius: 8px;
+  border: 1px dashed #C4BFB0;
+  padding: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 90px; flex-shrink: 0;
+}
+.coming-icon  { font-size: 20px; color: #C8C4B4; margin-bottom: 5px; }
+.coming-label { font-size: 9px; letter-spacing: .1em; color: #B0AA9A; }
+.coming-sub   { font-size: 10px; color: #C0BAA8; margin-top: 3px; }
+
+/* ── Quick Links ── */
+.links-wrap { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+.link-btn {
+  display: block; background: #2A2820; border-radius: 6px;
+  padding: 9px 12px; text-decoration: none; text-align: center;
+  transition: background .15s;
+}
+.link-btn:hover { background: #3A3828; }
+.link-btn-label { font-size: 11px; font-weight: 500; color: #E2DDD0; letter-spacing: .02em; }
+.link-btn-sub   { font-size: 9px; color: #6A6858; margin-top: 1px; letter-spacing: .04em; }
+
+/* ── Gallery ── */
+.gallery-wrap { display: flex; flex-direction: column; overflow: hidden; }
+.gallery-header { padding: 10px 18px; border-bottom: 0.5px solid #D4CFBF; flex-shrink: 0; }
+.gallery-title  { font-size: 13px; color: #4A4838; letter-spacing: .02em; }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  flex: 1;
+}
+.gallery-cell {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  border-right: 0.5px solid #D4CFBF;
+  border-bottom: 0.5px solid #D4CFBF;
+  overflow: hidden; position: relative;
+}
+.gallery-cell:nth-child(3n)   { border-right: none; }
+.gallery-cell:nth-child(n+7)  { border-bottom: none; }
+.gallery-cell img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.gallery-placeholder { font-size: 16px; color: #C8C2B0; }
+.gallery-placeholder-text { font-size: 7px; letter-spacing: .12em; color: #C8C2B0; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-card {
+  background: #F5F2EA;
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 360px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+.modal-title { font-size: 20px; font-weight: 500; color: #1A1A12; margin-bottom: 4px; }
+.modal-sub   { font-size: 9px; letter-spacing: .16em; color: #8C8A78; margin-bottom: 20px; }
+.modal-btns  { display: flex; gap: 12px; margin-bottom: 20px; }
+
+.mode-btn {
+  flex: 1; border-radius: 10px; padding: 16px 10px;
+  cursor: pointer; transition: transform .15s, opacity .15s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.mode-btn:hover { transform: translateY(-2px); opacity: .9; }
+.mode-711  { background: #007840; }
+.mode-sf   { background: #C0392B; }
+.mode-icon { font-size: 22px; }
+.mode-name { font-size: 13px; font-weight: 500; color: #fff; }
+.mode-desc { font-size: 9px; color: rgba(255,255,255,0.7); letter-spacing: .04em; }
+
+.modal-close {
+  font-size: 10px; letter-spacing: .12em; color: #8C8A78;
+  cursor: pointer; padding: 4px;
+}
+.modal-close:hover { color: #4A4838; }

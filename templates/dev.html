@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MUTTA · HUB — DEV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.css">
+<link rel="stylesheet" href="/static/css/dev.css">
+</head>
+<body class="dev-body">
+
+<!-- 登入遮罩 -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-title">MUTTA · HUB</div>
+    <div class="login-sub">開發者模式</div>
+    <input type="password" id="pwdInput" class="login-input" placeholder="輸入密碼" autocomplete="current-password">
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" id="loginBtn">進入</button>
+    <a href="/" class="login-back">← 返回主頁</a>
+  </div>
+</div>
+
+<!-- 開發者介面 -->
+<div class="dev-app" id="devApp" style="display:none">
+
+  <div class="dev-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="dev-badge">DEV</span>
+      <span class="dev-header-title">MUTTA · HUB 開發者模式</span>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a href="/" class="dev-back-btn">← 返回主頁</a>
+      <button class="dev-logout-btn" id="logoutBtn">登出</button>
+    </div>
+  </div>
+
+  <div class="dev-body-wrap">
+
+    <!-- 快速連結編輯 -->
+    <div class="dev-section">
+      <div class="dev-section-title">快速連結</div>
+      <div class="dev-section-desc">左側下方兩個連結按鈕的名稱與網址</div>
+      <div id="linksEditor"></div>
+      <button class="dev-save-btn" id="saveLinks">儲存連結</button>
+    </div>
+
+    <!-- 九宮格圖片 -->
+    <div class="dev-section">
+      <div class="dev-section-title">Brand Gallery</div>
+      <div class="dev-section-desc">點擊格子上傳圖片，點擊已上傳的圖片可刪除</div>
+      <div class="dev-gallery-grid" id="devGalleryGrid"></div>
+    </div>
+
+    <!-- 修改密碼 -->
+    <div class="dev-section">
+      <div class="dev-section-title">修改密碼</div>
+      <input type="password" id="newPwd"  class="dev-input" placeholder="新密碼（至少 6 碼）" style="margin-bottom:8px">
+      <input type="password" id="newPwd2" class="dev-input" placeholder="確認新密碼">
+      <div class="dev-msg" id="pwdMsg"></div>
+      <button class="dev-save-btn" id="savePwd">更新密碼</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/js/dev.js"></script>
+</body>
+</html>

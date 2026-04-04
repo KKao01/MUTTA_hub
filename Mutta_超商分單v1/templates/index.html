@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutta沐塔分單系統（超商模式）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left" id="logo">
+    <svg width="68" height="26" viewBox="0 0 68 26" fill="none">
+      <rect width="68" height="26" rx="4" fill="#007840"/>
+      <text x="4" y="20" font-family="'Arial Black',sans-serif" font-size="19" font-weight="900" fill="white">7</text>
+      <line x1="21" y1="4" x2="21" y2="22" stroke="white" stroke-width="1.2" stroke-opacity="0.45"/>
+      <text x="24" y="12" font-family="Arial,sans-serif" font-size="6.5" font-weight="800" fill="white" letter-spacing="0.5">ELEVEN</text>
+      <text x="24" y="21" font-family="'Noto Sans TC',sans-serif" font-size="6" fill="white" opacity="0.85">超商取貨</text>
+    </svg>
+    <div class="header-divider"></div>
+    <div>
+      <div class="header-title">Mutta沐塔分單系統</div>
+      <div class="header-sub">超商模式</div>
+    </div>
+  </div>
+  <span class="header-badge">超商模式</span>
+</div>
+
+<div class="main">
+
+  <div class="section-title">上傳訂單</div>
+  <div class="upload-box" id="uploadZone">
+    <div class="upload-icon">📄</div>
+    <div class="upload-label">點擊或拖曳 PDF</div>
+    <div class="upload-sub" id="uploadSub">可多次新增，不會覆蓋已加入的檔案</div>
+    <input type="file" id="fileInput" accept=".pdf" multiple hidden>
+  </div>
+
+  <!-- 已加入的檔案清單 -->
+  <div id="fileListWrap" style="display:none; margin-bottom:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A09E98;">已選取檔案</span>
+      <button onclick="clearAllFiles()" style="font-size:11px;color:#EA5455;background:none;border:none;cursor:pointer;">清除全部</button>
+    </div>
+    <div id="fileListItems"></div>
+  </div>
+
+  <div class="options-bar">
+    <div class="toggle-wrap">
+      <label class="toggle">
+        <input type="checkbox" id="printGift" checked>
+        <span class="toggle-slider"></span>
+      </label>
+      <span>列印贈品資訊</span>
+    </div>
+    <div class="preview-pill">
+      <span class="preview-cat">1+1慕斯</span>
+      <span id="previewGift">紫撲+C1+F1+乳液各1（盒）</span>
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <button class="btn-process" id="runBtn" disabled>請上傳 PDF</button>
+
+  <div class="loading-bar" id="loadingBar" style="display:none">
+    <div class="spinner"></div>
+    <div id="loadingText">處理中，請稍候…</div>
+  </div>
+
+  <div class="result-section" id="resultSection" style="display:none">
+    <div class="result-header">
+      <div class="result-stats">
+        <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">訂單總數</div></div>
+        <div class="stat-box"><div class="stat-num" id="statCats">0</div><div class="stat-label">分類數</div></div>
+      </div>
+      <button class="btn-dl btn-dl-zip" id="dlAllBtn">⬇ 下載全部 ZIP</button>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+    <div class="log-section">
+      <div class="log-label">處理記錄</div>
+      <div class="log-area" id="logArea"></div>
+    </div>
+  </div>
+
+</div>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutta沐塔分單系統（順豐模式）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <!-- SF Express Logo SVG - 紅灰配色 -->
+    <svg width="72" height="26" viewBox="0 0 72 26" fill="none">
+      <rect width="72" height="13" rx="4" fill="#CC2020"/>
+      <rect width="72" height="13" y="13" rx="0" fill="#555555"/>
+      <rect x="0" y="10" width="72" height="6" fill="#CC2020"/>
+      <rect x="0" y="13" width="72" height="3" fill="#555555"/>
+      <text x="11" y="11" font-family="'Arial Black',sans-serif" font-size="9" font-weight="900" fill="white" text-anchor="middle">SF</text>
+      <text x="11" y="22" font-family="'Noto Sans TC',sans-serif" font-size="6" fill="white" text-anchor="middle" opacity="0.9">順豐</text>
+      <line x1="22" y1="3" x2="22" y2="23" stroke="white" stroke-width="0.8" stroke-opacity="0.3"/>
+      <text x="25" y="11" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="white" letter-spacing="0.5">EXPRESS</text>
+      <text x="25" y="22" font-family="Arial,sans-serif" font-size="6" fill="white" opacity="0.85">SPEED &amp; SAFETY</text>
+    </svg>
+    <div class="header-divider"></div>
+    <div>
+      <div class="header-title">Mutta沐塔分單系統</div>
+      <div class="header-sub">順豐模式</div>
+    </div>
+  </div>
+  <span class="header-badge">順豐模式</span>
+</div>
+
+<div class="main">
+
+  <div class="section-title">上傳檔案</div>
+  <div class="upload-grid">
+    <div class="upload-box" id="pdfBox">
+      <div class="upload-icon">📄</div>
+      <div class="upload-label">宅配訂單 PDF</div>
+      <div class="upload-sub">MeepShop 匯出（運送方式：宅配）</div>
+      <div class="upload-filename" id="pdfName"></div>
+      <input type="file" id="pdfInput" accept=".pdf" hidden>
+    </div>
+    <div class="upload-box" id="csvBox">
+      <div class="upload-icon">📊</div>
+      <div class="upload-label">訂單資料 CSV</div>
+      <div class="upload-sub">含收件人姓名、電話、地址</div>
+      <div class="upload-filename" id="csvName"></div>
+      <input type="file" id="csvInput" accept=".csv" hidden>
+    </div>
+  </div>
+
+  <div class="options-bar">
+    <div class="toggle-wrap">
+      <label class="toggle">
+        <input type="checkbox" id="printGift" checked>
+        <span class="toggle-slider"></span>
+      </label>
+      <span>列印贈品資訊</span>
+    </div>
+    <div class="preview-pill">
+      <span class="preview-cat">1+1精粹</span>
+      <span id="previewGift">梳+C2+F2（盒）+卡</span>
+    </div>
+  </div>
+
+  <button class="btn-process" id="processBtn" disabled onclick="startProcess()">
+    請上傳 PDF 和 CSV
+  </button>
+
+  <div class="loading-bar" id="loadingBar" style="display:none">
+    <div class="spinner"></div>
+    <div style="font-size:14px;color:#666">處理中，請稍候…</div>
+  </div>
+
+  <div class="result-section" id="resultSection" style="display:none">
+    <div class="result-header">
+      <div class="result-stats">
+        <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">訂單總數</div></div>
+        <div class="stat-box"><div class="stat-num" id="statCats">0</div><div class="stat-label">分類數</div></div>
+      </div>
+      <div class="dl-buttons">
+        <button class="btn-dl btn-dl-sf" onclick="downloadSF()">⬇ 下載順豐 Excel</button>
+        <button class="btn-dl btn-dl-zip" onclick="downloadAll()">⬇ 下載全部 ZIP</button>
+      </div>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+</div>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

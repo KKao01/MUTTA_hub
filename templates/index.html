@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MUTTA · HUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left" id="hubLogo">
+    <span class="header-title">MUTTA · HUB</span>
+    <span class="header-subtitle">BACKEND MANAGEMENT SYSTEM</span>
+  </div>
+  <div class="header-right">
+    <div class="online-dot"></div>
+    <span class="online-label">ONLINE</span>
+    <span class="clock" id="clock">00:00:00</span>
+  </div>
+</div>
+
+<!-- Body -->
+<div class="body-wrap">
+
+  <!-- Left Sidebar -->
+  <div class="sidebar">
+
+    <!-- 分單系統 card -->
+    <div class="module-card" id="splitCard" onclick="openModal()">
+      <div class="card-cover">
+        <div class="cover-green"></div>
+        <div class="cover-red"></div>
+        <!-- 7-Eleven badge -->
+        <div class="badge-711">
+          <svg width="54" height="20" viewBox="0 0 54 20" fill="none">
+            <rect width="54" height="20" rx="3" fill="#005C2E"/>
+            <text x="4" y="15" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="white">7</text>
+            <line x1="18" y1="3" x2="18" y2="17" stroke="white" stroke-width="0.8" stroke-opacity="0.4"/>
+            <text x="21" y="9" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="white" letter-spacing="0.4">ELEVEN</text>
+            <text x="21" y="16" font-family="Arial,sans-serif" font-size="5" fill="white" opacity="0.7">超商取貨</text>
+          </svg>
+        </div>
+        <!-- 中央文字 -->
+        <div class="card-center-text">
+          <div class="card-title">分單系統</div>
+          <div class="card-sub">ORDER ROUTING</div>
+        </div>
+        <!-- SF badge 右下 -->
+        <div class="badge-sf">
+          <span class="sf-red">SF</span>
+          <span class="sf-gray">SF EXPRESS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coming Soon 1 -->
+    <div class="coming-card">
+      <div class="coming-icon">⏳</div>
+      <div class="coming-label">COMING SOON</div>
+      <div class="coming-sub">等待開發</div>
+    </div>
+
+    <!-- Coming Soon 2 -->
+    <div class="coming-card" style="opacity:.4">
+      <div class="coming-label">COMING SOON</div>
+    </div>
+
+    <!-- 快速連結 -->
+    <div class="links-wrap" id="linksWrap"></div>
+
+  </div>
+
+  <!-- Right: Brand Gallery -->
+  <div class="gallery-wrap">
+    <div class="gallery-header">
+      <span class="gallery-title">Brand Gallery</span>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+
+</div>
+
+<!-- Modal: 選擇模式 -->
+<div class="modal-overlay" id="modeModal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-card">
+    <div class="modal-title">分單系統</div>
+    <div class="modal-sub">SELECT MODE</div>
+    <div class="modal-btns">
+      <div class="mode-btn mode-711" onclick="goMode('supermarket')">
+        <div class="mode-icon">🏪</div>
+        <div class="mode-name">超商模式</div>
+        <div class="mode-desc">7-ELEVEN 取貨</div>
+      </div>
+      <div class="mode-btn mode-sf" onclick="goMode('sf')">
+        <div class="mode-icon">📦</div>
+        <div class="mode-name">順豐模式</div>
+        <div class="mode-desc">SF EXPRESS 宅配</div>
+      </div>
+    </div>
+    <div class="modal-close" onclick="closeModal()">CLOSE</div>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
