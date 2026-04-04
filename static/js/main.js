@@ -70,8 +70,12 @@ function closeModal(e) {
 }
 
 function goMode(mode) {
-  const port = hubConfig.ports?.[mode] || (mode === 'sf' ? 8001 : 8000);
-  window.open(`http://localhost:${port}`, '_blank');
+  const urls = {
+    supermarket: 'https://muttasupermarket-production.up.railway.app',
+    sf: 'https://mutta-sf.up.railway.app'  // 順豐之後再填
+  };
+  const url = urls[mode] || '/';
+  window.open(url, '_blank');
   document.getElementById('modeModal').style.display = 'none';
 }
 
