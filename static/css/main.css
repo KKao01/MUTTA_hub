@@ -88,38 +88,7 @@ body {
 .sf-red  { background: #CC2020; padding: 3px 6px; font-size: 8px; font-weight: 900; color: #fff; letter-spacing: .04em; }
 .sf-gray { background: #555555; padding: 3px 8px; font-size: 8px; color: #E0E0E0; letter-spacing: .06em; }
 
-/* ── CS Assistant Card ── */
-.cs-card-body {
-  background: linear-gradient(135deg, #3B4F3C 60%, #C8A96E 60%);
-  padding: 18px 14px 14px;
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-.cs-card-label {
-  font-size: 9px;
-  letter-spacing: .14em;
-  color: rgba(255,255,255,0.40);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.cs-card-footer {
-  background: #2C3B2D;
-  padding: 8px 12px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.cs-tag {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.5px;
-  background: #C8A96E;
-  color: #2C2010;
-}
+/* ── Coming Soon ── */
 .coming-card {
   border-radius: 8px;
   border: 1px dashed #C4BFB0;
@@ -201,3 +170,36 @@ body {
   cursor: pointer; padding: 4px;
 }
 .modal-close:hover { color: #4A4838; }
+
+/* ── CS Assistant Card ── */
+.cs-card-body {
+  background: linear-gradient(135deg, #3B4F3C 58%, #B8965A 58%);
+  padding: 18px 14px 14px;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.cs-card-label {
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: rgba(255,255,255,0.40);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.cs-card-footer {
+  background: #2C3B2D;
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.cs-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  background: #C8A96E;
+  color: #2C2010;
+}
