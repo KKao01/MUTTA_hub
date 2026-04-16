@@ -31,41 +31,24 @@
 
     <!-- 分單系統 card -->
     <div class="module-card" id="splitCard" onclick="openModal()">
-      <div class="card-cover">
-        <div class="cover-green"></div>
-        <div class="cover-red"></div>
-        <!-- 7-Eleven badge -->
-        <div class="badge-711">
-          <svg width="54" height="20" viewBox="0 0 54 20" fill="none">
-            <rect width="54" height="20" rx="3" fill="#005C2E"/>
-            <text x="4" y="15" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="white">7</text>
-            <line x1="18" y1="3" x2="18" y2="17" stroke="white" stroke-width="0.8" stroke-opacity="0.4"/>
-            <text x="21" y="9" font-family="Arial,sans-serif" font-size="5" font-weight="700" fill="white" letter-spacing="0.4">ELEVEN</text>
-            <text x="21" y="16" font-family="Arial,sans-serif" font-size="5" fill="white" opacity="0.7">超商取貨</text>
-          </svg>
-        </div>
-        <!-- 中央文字 -->
-        <div class="card-center-text">
-          <div class="card-title">分單系統</div>
-          <div class="card-sub">ORDER ROUTING</div>
-        </div>
-        <!-- SF badge 右下 -->
-        <div class="badge-sf">
-          <span class="sf-red">SF</span>
-          <span class="sf-gray">SF EXPRESS</span>
-        </div>
+      <div class="order-card-body">
+        <div class="unified-title">分單系統</div>
+        <div class="unified-sub">ORDER ROUTING</div>
+      </div>
+      <div class="unified-footer">
+        <span class="unified-tag tag-green">超商</span>
+        <span class="unified-tag tag-red">順豐</span>
       </div>
     </div>
 
     <!-- 客服助理 card -->
-    <div class="module-card cs-card" onclick="window.open('https://muttacs-production.up.railway.app','_blank')">
+    <div class="module-card" onclick="window.open('https://muttacs-production.up.railway.app','_blank')">
       <div class="cs-card-body">
-        <div class="cs-card-label">AI 輔助</div>
-        <div class="card-title">客服助理</div>
-        <div class="card-sub">CS ASSISTANT</div>
+        <div class="unified-title">客服助理</div>
+        <div class="unified-sub">CS ASSISTANT</div>
       </div>
-      <div class="cs-card-footer">
-        <span class="cs-tag">AI 輔助</span>
+      <div class="unified-footer">
+        <span class="unified-tag tag-gold">AI 輔助</span>
       </div>
     </div>
 
