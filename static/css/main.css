@@ -184,6 +184,12 @@ body {
   height: 130px;
   display: flex; flex-direction: column; justify-content: flex-end;
 }
+.track-card-body {
+  background: linear-gradient(135deg, #2B2B2B 58%, #B87333 58%);
+  padding: 20px 16px 16px;
+  height: 130px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
 .unified-title {
   font-size: 24px; font-weight: 700; color: #fff;
   letter-spacing: .04em; margin-bottom: 5px;
