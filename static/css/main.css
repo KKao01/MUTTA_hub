@@ -209,3 +209,13 @@ body {
 .tag-green { background: #2a7a2e; color: #d6f5d6; }
 .tag-red   { background: #b83030; color: #fde8e8; }
 .tag-gold  { background: #C8A96E; color: #2C2010; }
+
+/* LINE Bot 後台 - LINE 綠 + 自家紫斜切 */
+.lb-card-body {
+  background: linear-gradient(135deg, #06C755 58%, #7B5CFF 58%);
+  padding: 20px 16px 16px;
+  height: 130px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.tag-line   { background: #06C755; color: #fff; }
+.tag-violet { background: #5B3FE4; color: #fff; }
