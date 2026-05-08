@@ -29,8 +29,8 @@
   <!-- Left Sidebar -->
   <div class="sidebar">
 
-    <!-- 分單系統 card -->
-    <div class="module-card" id="splitCard" onclick="openModal()">
+    <!-- 分單系統 card（合併版 V4，直接跳轉，不再開彈窗） -->
+    <div class="module-card" id="splitCard" onclick="window.open('https://mutta-v-40-production.up.railway.app/','_blank')">
       <div class="order-card-body">
         <div class="unified-title">分單系統</div>
         <div class="unified-sub">ORDER ROUTING</div>
@@ -89,27 +89,6 @@
     <div class="gallery-grid" id="galleryGrid"></div>
   </div>
 
-</div>
-
-<!-- Modal: 選擇模式 -->
-<div class="modal-overlay" id="modeModal" style="display:none" onclick="closeModal(event)">
-  <div class="modal-card">
-    <div class="modal-title">分單系統</div>
-    <div class="modal-sub">SELECT MODE</div>
-    <div class="modal-btns">
-      <div class="mode-btn mode-711" onclick="goMode('supermarket')">
-        <div class="mode-icon">🏪</div>
-        <div class="mode-name">超商模式</div>
-        <div class="mode-desc">7-ELEVEN 取貨</div>
-      </div>
-      <div class="mode-btn mode-sf" onclick="goMode('sf')">
-        <div class="mode-icon">📦</div>
-        <div class="mode-name">順豐模式</div>
-        <div class="mode-desc">SF EXPRESS 宅配</div>
-      </div>
-    </div>
-    <div class="modal-close" onclick="closeModal()">CLOSE</div>
-  </div>
 </div>
 
 <script src="/static/js/main.js"></script>
