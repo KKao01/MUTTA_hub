@@ -219,3 +219,16 @@ body {
 }
 .tag-line   { background: #06C755; color: #fff; }
 .tag-violet { background: #5B3FE4; color: #fff; }
+
+/* 贈品設定 - MUTTA 玫瑰棕系 */
+.gift-card-body {
+  background: linear-gradient(135deg, #c9a896 58%, #8b6f5f 58%);
+  padding: 20px 16px 16px;
+  height: 130px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.unified-footer.gift-footer {
+  background: #5f4438;
+}
+.tag-gift { background: #faf3ee; color: #8b6f5f; }
+.tag-gtm  { background: #d4b8a8; color: #5f4438; }
