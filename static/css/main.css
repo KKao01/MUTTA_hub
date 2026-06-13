@@ -187,9 +187,9 @@ body.editing .tbox.sel{ outline: 1px dashed rgba(127,182,255,.5); outline-offset
   .barRow .bar-cell{ display: none !important; }
   .bar{ grid-area: auto !important; flex: 1 1 100%; height: 52px; }
 
-  /* 文字框：手機改為正常流（堆在卡片上方），不再絕對定位重疊 */
-  .textlayer{ position: static; height: auto; padding: 6px 0 2px; }
-  .tbox{ position: static !important; transform: none !important; left: auto !important; top: auto !important; max-width: 100%; margin: 6px auto; }
+  /* 文字框：手機改成「上半部 hero 區」佔滿第一畫面，往下滑才看到卡片 */
+  .textlayer{ position: static; height: auto; min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0; }
+  .tbox{ position: static !important; transform: none !important; left: auto !important; top: auto !important; max-width: 100%; margin: 8px auto; }
   .tbox .txt{ word-break: break-word; }
   .tbox .grip{ display: none !important; }
 
