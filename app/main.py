@@ -1,7 +1,7 @@
 """
 Mutta Hub — 母系統後端
 """
-import os, json, hashlib
+import os, json, hashlib, base64
 from pathlib import Path
 from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
@@ -16,13 +16,15 @@ MEDIA_DIR   = DATA_DIR / "media"
 CONFIG_PATH = DATA_DIR / "config.json"
 REPO_CONFIG = BASE_DIR / "config.json"   # 隨程式打包的種子設定（保留已 commit 的密碼/版面）
 MAX_BG_MB   = 20
+MAX_VIDEOS  = 6
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_CONFIG = {
     "password_hash": "ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270",
-    "background": {"type": "video", "video": "/static/bg.mp4", "darken": 50},
+    "background": {"type": "video", "video": "/static/bg.mp4", "darken": 50,
+                   "videos": [{"id": "default", "name": "預設影片", "url": "/static/bg.mp4", "thumb": "/static/bg-thumb.jpg"}]},
     "cards": [
         {"id": "route", "r": 1, "c": 1, "visible": True, "icon": "⊟", "title": "分單系統", "sub": "Order Routing",   "tag1": "超商", "tag2": "順豐", "accent": "#36b37e", "href": "https://mutta-v-40-production.up.railway.app/"},
         {"id": "track", "r": 1, "c": 2, "visible": True, "icon": "◎", "title": "貨態查詢", "sub": "Tracking System", "tag1": "超商", "tag2": "順豐", "accent": "#B87333", "href": "https://mutta-track-production.up.railway.app/admin"},
@@ -39,13 +41,24 @@ DEFAULT_CONFIG = {
     ]
 }
 
+def _norm_bg(cfg):
+    bg = cfg.get("background") or {}
+    bg.setdefault("type", "video")
+    bg.setdefault("darken", 50)
+    bg.setdefault("video", "/static/bg.mp4")
+    vids = bg.get("videos")
+    if not isinstance(vids, list) or not vids:
+        bg["videos"] = [{"id": "default", "name": "預設影片", "url": "/static/bg.mp4", "thumb": "/static/bg-thumb.jpg"}]
+    cfg["background"] = bg
+    return cfg
+
 def load_config():
     if CONFIG_PATH.exists():
         try:
             cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
             for k, v in DEFAULT_CONFIG.items():
                 cfg.setdefault(k, v)
-            return cfg
+            return _norm_bg(cfg)
         except Exception:
             pass
     # 第一次：優先用 repo 內已 commit 的 config.json 當種子（保留密碼/版面），否則用預設
@@ -58,6 +71,7 @@ def load_config():
     cfg = seed if seed else json.loads(json.dumps(DEFAULT_CONFIG))
     for k, v in DEFAULT_CONFIG.items():
         cfg.setdefault(k, v)
+    cfg = _norm_bg(cfg)
     save_config(cfg)
     return cfg
 
@@ -180,13 +194,20 @@ async def set_background(request: Request, _=Depends(require_dev)):
     return {"ok": True, "background": bg}
 
 @app.post("/api/dev/background/video")
-async def upload_background_video(request: Request, file: UploadFile = File(...), _=Depends(require_dev)):
+async def upload_background_video(request: Request, file: UploadFile = File(...),
+                                  name: str = Form(""), thumb: str = Form(""),
+                                  _=Depends(require_dev)):
     if not (file.content_type or "").startswith("video/"):
         raise HTTPException(400, "只接受影片檔")
     limit = MAX_BG_MB * 1024 * 1024
     cl = request.headers.get("content-length")
-    if cl and cl.isdigit() and int(cl) > limit:
+    if cl and cl.isdigit() and int(cl) > limit + 3 * 1024 * 1024:
         raise HTTPException(413, f"影片太大（約 {int(cl)//1048576} MB）。請先壓到 {MAX_BG_MB} MB 以下再上傳。")
+    cfg = load_config()
+    bg = cfg["background"]
+    extra = [v for v in bg.get("videos", []) if v.get("id") != "default"]
+    if len(extra) >= MAX_VIDEOS:
+        raise HTTPException(400, f"影片數量已達上限（{MAX_VIDEOS} 支），請先刪除一些再上傳。")
     size, chunks = 0, []
     while True:
         chunk = await file.read(1024 * 1024)
@@ -197,13 +218,61 @@ async def upload_background_video(request: Request, file: UploadFile = File(...)
             raise HTTPException(413, f"影片太大。請先用本機工具壓到 {MAX_BG_MB} MB 以下再上傳。")
         chunks.append(chunk)
     MEDIA_DIR.mkdir(parents=True, exist_ok=True)
-    (MEDIA_DIR / "bg.mp4").write_bytes(b"".join(chunks))
-    cfg = load_config()
-    bg = cfg.get("background", {}) or {}
-    bg["type"] = "video"; bg["video"] = "/media/bg.mp4"; bg.setdefault("darken", 50)
-    cfg["background"] = bg
+    vid = os.urandom(4).hex()
+    (MEDIA_DIR / f"bg_{vid}.mp4").write_bytes(b"".join(chunks))
+    url = f"/media/bg_{vid}.mp4"
+    thumb_url = ""
+    if isinstance(thumb, str) and thumb.startswith("data:image") and "," in thumb:
+        try:
+            (MEDIA_DIR / f"bg_{vid}.jpg").write_bytes(base64.b64decode(thumb.split(",", 1)[1]))
+            thumb_url = f"/media/bg_{vid}.jpg"
+        except Exception:
+            thumb_url = ""
+    nm = (name or file.filename or "影片").strip()[:40]
+    bg.setdefault("videos", []).append({"id": vid, "name": nm, "url": url, "thumb": thumb_url})
+    bg["type"] = "video"
+    bg["video"] = url
     save_config(cfg)
-    return {"ok": True, "url": "/media/bg.mp4", "size": size}
+    return {"ok": True, "background": bg, "size": size}
+
+@app.post("/api/dev/background/select")
+async def select_background_video(request: Request, _=Depends(require_dev)):
+    body = await request.json()
+    vid = body.get("id", "")
+    cfg = load_config()
+    bg = cfg["background"]
+    match = next((v for v in bg.get("videos", []) if v.get("id") == vid), None)
+    if not match:
+        raise HTTPException(404, "找不到該影片")
+    bg["type"] = "video"
+    bg["video"] = match["url"]
+    save_config(cfg)
+    return {"ok": True, "background": bg}
+
+@app.post("/api/dev/background/delete-video")
+async def delete_background_video(request: Request, _=Depends(require_dev)):
+    body = await request.json()
+    vid = body.get("id", "")
+    if vid == "default":
+        raise HTTPException(400, "預設影片不可刪除")
+    cfg = load_config()
+    bg = cfg["background"]
+    vids = bg.get("videos", [])
+    match = next((v for v in vids if v.get("id") == vid), None)
+    if not match:
+        raise HTTPException(404, "找不到該影片")
+    for suffix in (".mp4", ".jpg"):
+        f = MEDIA_DIR / f"bg_{vid}{suffix}"
+        try:
+            if f.exists():
+                f.unlink()
+        except Exception:
+            pass
+    bg["videos"] = [v for v in vids if v.get("id") != vid]
+    if bg.get("video") == match.get("url"):
+        bg["video"] = bg["videos"][0]["url"] if bg["videos"] else "/static/bg.mp4"
+    save_config(cfg)
+    return {"ok": True, "background": bg}
 
 @app.post("/api/dev/change-password")
 async def change_password(request: Request, _=Depends(require_dev)):

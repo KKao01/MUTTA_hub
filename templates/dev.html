@@ -47,12 +47,16 @@
       </div>
       <div style="margin:14px 0 5px;font-size:12px;color:#8C8A78">暗化程度</div>
       <input type="range" id="bgDarken" min="0" max="80" value="50" style="width:100%">
-      <button class="dev-save-btn" id="saveBg" style="margin-top:10px">儲存背景設定</button>
+      <button class="dev-save-btn" id="saveBg" style="margin-top:10px">儲存類型 / 暗化</button>
       <div class="dev-msg" id="bgMsg"></div>
-      <div style="height:16px"></div>
-      <div class="dev-section-desc">更換影片檔（會覆蓋目前的背景影片）</div>
-      <button class="dev-save-btn" id="uploadBgBtn" style="background:#3A3828">⤒ 上傳新影片</button>
+
+      <div style="height:18px"></div>
+      <div class="dev-section-desc">影片庫（點縮圖即可選用為背景；右上 ✕ 刪除）。每支 ≤20MB，最多 6 支。</div>
+      <div class="video-lib" id="videoLib"></div>
+      <button class="dev-save-btn" id="uploadBgBtn" style="background:#3A3828">＋ 上傳影片</button>
       <div class="dev-msg" id="bgUpMsg"></div>
+      <video id="thumbVideo" style="display:none" muted playsinline></video>
+      <canvas id="thumbCanvas" style="display:none"></canvas>
     </div>
 
     <!-- 提示：版面編輯在主頁 -->

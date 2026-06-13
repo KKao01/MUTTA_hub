@@ -163,3 +163,35 @@ body.editing .tbox.sel{ outline: 1px dashed rgba(127,182,255,.5); outline-offset
 #tsizeN{ width: 44px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14); border-radius: 6px; color: #eaf0f7; font-family: var(--fm); font-size: 12px; text-align: center; padding: 3px 0; }
 #tcolor{ width: 27px; height: 27px; border: 1px solid rgba(255,255,255,.14); border-radius: 7px; background: none; cursor: pointer; padding: 0; }
 .tsep{ width: 1px; height: 18px; background: rgba(255,255,255,.12); }
+
+/* ════════ 手機版（≤768px）：修正重疊/爆版 ════════ */
+@media (max-width: 768px){
+  html, body{ overflow-x: hidden; }
+  body.editing .hub-body{ padding-top: 0; }
+
+  .topbar{ height: 50px; padding: 0 12px; }
+  .brand-title{ font-size: 15px; } .brand-sub{ font-size: 7px; }
+  .status{ gap: 6px; } .clock{ font-size: 10px; }
+  .edit-fab{ margin-left: 6px; padding: 5px 9px; font-size: 11px; }
+
+  /* 主體：由上往下排、可捲動（不再貼底） */
+  .hub-main{ justify-content: flex-start; gap: 12px; padding: 14px 12px 28px; overflow-y: auto; }
+
+  /* 字卡：2 欄正常流，高度自動，不重疊 */
+  .grid7{ display: flex; flex-wrap: wrap; height: auto; min-height: 0; gap: 10px; }
+  .grid7 .cell{ display: none !important; }
+  .card{ flex: 1 1 calc(50% - 5px); min-height: 124px; grid-area: auto !important; }
+
+  /* 長條：覆蓋桌機的格子定位，改整排堆疊 */
+  .barRow{ display: flex; flex-wrap: wrap; grid-template-rows: none; height: auto; gap: 10px; }
+  .barRow .bar-cell{ display: none !important; }
+  .bar{ grid-area: auto !important; flex: 1 1 100%; height: 52px; }
+
+  /* 文字框：水平置中、限制寬度，避免被擠成直書 */
+  .tbox{ left: 50% !important; max-width: 92vw; }
+  .tbox .txt{ word-break: break-word; }
+
+  /* inspector / 文字工具列：手機改底部、可橫捲 */
+  .inspector{ width: 100%; top: auto; height: 62%; border-left: none; border-top: 1px solid rgba(255,255,255,.1); }
+  .ttoolbar{ top: auto; bottom: 12px; left: 50%; max-width: 94vw; overflow-x: auto; }
+}
