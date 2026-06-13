@@ -187,9 +187,11 @@ body.editing .tbox.sel{ outline: 1px dashed rgba(127,182,255,.5); outline-offset
   .barRow .bar-cell{ display: none !important; }
   .bar{ grid-area: auto !important; flex: 1 1 100%; height: 52px; }
 
-  /* 文字框：水平置中、限制寬度，避免被擠成直書 */
-  .tbox{ left: 50% !important; max-width: 92vw; }
+  /* 文字框：手機改為正常流（堆在卡片上方），不再絕對定位重疊 */
+  .textlayer{ position: static; height: auto; padding: 6px 0 2px; }
+  .tbox{ position: static !important; transform: none !important; left: auto !important; top: auto !important; max-width: 100%; margin: 6px auto; }
   .tbox .txt{ word-break: break-word; }
+  .tbox .grip{ display: none !important; }
 
   /* inspector / 文字工具列：手機改底部、可橫捲 */
   .inspector{ width: 100%; top: auto; height: 62%; border-left: none; border-top: 1px solid rgba(255,255,255,.1); }
