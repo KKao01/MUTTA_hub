@@ -11,7 +11,6 @@
 </head>
 <body class="dev-body">
 
-<!-- 登入遮罩 -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
     <div class="login-title">MUTTA · HUB</div>
@@ -23,9 +22,7 @@
   </div>
 </div>
 
-<!-- 開發者介面 -->
 <div class="dev-app" id="devApp" style="display:none">
-
   <div class="dev-header">
     <div style="display:flex;align-items:center;gap:10px">
       <span class="dev-badge">DEV</span>
@@ -39,19 +36,30 @@
 
   <div class="dev-body-wrap">
 
-    <!-- 快速連結編輯 -->
+    <!-- 背景設定 -->
     <div class="dev-section">
-      <div class="dev-section-title">快速連結</div>
-      <div class="dev-section-desc">左側下方兩個連結按鈕的名稱與網址</div>
-      <div id="linksEditor"></div>
-      <button class="dev-save-btn" id="saveLinks">儲存連結</button>
+      <div class="dev-section-title">背景設定</div>
+      <div class="dev-section-desc">選擇主頁背景。影片請先用本機工具壓到 20MB 以下（建議 720p、≤10MB），否則會被擋下。</div>
+      <div class="bg-type-row" id="bgTypeRow">
+        <button class="bg-type-btn" data-bg="video">影片</button>
+        <button class="bg-type-btn" data-bg="shader">Shader 同心圓</button>
+        <button class="bg-type-btn" data-bg="none">無背景</button>
+      </div>
+      <div style="margin:14px 0 5px;font-size:12px;color:#8C8A78">暗化程度</div>
+      <input type="range" id="bgDarken" min="0" max="80" value="50" style="width:100%">
+      <button class="dev-save-btn" id="saveBg" style="margin-top:10px">儲存背景設定</button>
+      <div class="dev-msg" id="bgMsg"></div>
+      <div style="height:16px"></div>
+      <div class="dev-section-desc">更換影片檔（會覆蓋目前的背景影片）</div>
+      <button class="dev-save-btn" id="uploadBgBtn" style="background:#3A3828">⤒ 上傳新影片</button>
+      <div class="dev-msg" id="bgUpMsg"></div>
     </div>
 
-    <!-- 九宮格圖片 -->
+    <!-- 提示：版面編輯在主頁 -->
     <div class="dev-section">
-      <div class="dev-section-title">Brand Gallery</div>
-      <div class="dev-section-desc">點擊格子上傳圖片，點擊已上傳的圖片可刪除</div>
-      <div class="dev-gallery-grid" id="devGalleryGrid"></div>
+      <div class="dev-section-title">版面編輯</div>
+      <div class="dev-section-desc">字卡（3×7）與長條（1×5）的內容、位置、連結，請到主頁右上「✎ 編輯」用同一組密碼進入編輯。</div>
+      <a href="/" class="dev-save-btn" style="display:inline-block;text-decoration:none;text-align:center">前往主頁編輯 →</a>
     </div>
 
     <!-- 修改密碼 -->

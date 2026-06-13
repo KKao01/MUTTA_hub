@@ -18,3 +18,5 @@ venv/
 # 系統
 .DS_Store
 Thumbs.db
+
+media/

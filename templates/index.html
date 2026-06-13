@@ -5,103 +5,96 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MUTTA · HUB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/main.css">
 </head>
-<body>
+<body class="hub-body">
 
-<!-- Header -->
-<div class="header">
-  <div class="header-left" id="hubLogo">
-    <span class="header-title">MUTTA · HUB</span>
-    <span class="header-subtitle">BACKEND MANAGEMENT SYSTEM</span>
+<div id="bgRoot"></div>
+<div class="bg-overlay" id="bgOverlay"></div>
+<div class="textlayer" id="textlayer"></div>
+
+<div class="editbar" id="editbar">
+  <button class="eb-done" id="doneBtn">✓ 完成</button>
+  <span class="eb-title">編輯模式</span>
+  <div class="eb-actions">
+    <button id="addText">＋ 文字框</button>
+    <button id="addCard">＋ 字卡</button>
+    <button id="addBar">＋ 長條</button>
+    <button class="eb-save" id="saveBtn">⤓ 儲存</button>
   </div>
-  <div class="header-right">
-    <div class="online-dot"></div>
-    <span class="online-label">ONLINE</span>
+</div>
+
+<header class="topbar">
+  <div class="brand" id="hubLogo">
+    <span class="brand-blk"></span>
+    <div class="brand-text">
+      <span class="brand-title">MUTTA · HUB</span>
+      <span class="brand-sub">BACKEND MANAGEMENT SYSTEM</span>
+    </div>
+  </div>
+  <div class="status">
+    <span class="pulse"></span><span class="online">ONLINE</span>
     <span class="clock" id="clock">00:00:00</span>
+    <button class="edit-fab" id="editFab">✎ 編輯</button>
+  </div>
+</header>
+
+<main class="hub-main">
+  <div class="grid7" id="grid"></div>
+  <div class="barRow" id="barRow"></div>
+</main>
+
+<!-- 編輯登入 -->
+<div class="edit-login" id="editLogin">
+  <div class="el-card">
+    <div class="el-title">編輯模式</div>
+    <div class="el-sub">輸入開發者密碼</div>
+    <input type="password" id="elPwd" placeholder="密碼" autocomplete="current-password">
+    <div class="el-err" id="elErr"></div>
+    <div class="el-btns"><button id="elCancel">取消</button><button id="elGo">進入</button></div>
   </div>
 </div>
 
-<!-- Body -->
-<div class="body-wrap">
-
-  <!-- Left Sidebar -->
-  <div class="sidebar">
-
-    <!-- 分單系統 card（合併版 V4，直接跳轉，不再開彈窗） -->
-    <div class="module-card" id="splitCard" onclick="window.open('https://mutta-v-40-production.up.railway.app/','_blank')">
-      <div class="order-card-body">
-        <div class="unified-title">分單系統</div>
-        <div class="unified-sub">ORDER ROUTING</div>
-      </div>
-      <div class="unified-footer">
-        <span class="unified-tag tag-green">超商</span>
-        <span class="unified-tag tag-red">順豐</span>
-      </div>
-    </div>
-
-    <!-- 貨態查詢系統 card (中間位置) -->
-    <div class="module-card" onclick="window.open('https://mutta-track-production.up.railway.app/admin','_blank')">
-      <div class="track-card-body">
-        <div class="unified-title">貨態查詢</div>
-        <div class="unified-sub">TRACKING SYSTEM</div>
-      </div>
-      <div class="unified-footer">
-        <span class="unified-tag tag-green">超商</span>
-        <span class="unified-tag tag-red">順豐</span>
-      </div>
-    </div>
-
-    <!-- 客服助理 card (移到最下面) -->
-    <div class="module-card" onclick="window.open('https://muttacs-production.up.railway.app','_blank')">
-      <div class="cs-card-body">
-        <div class="unified-title">客服助理</div>
-        <div class="unified-sub">CS ASSISTANT</div>
-      </div>
-      <div class="unified-footer">
-        <span class="unified-tag tag-gold">AI 輔助</span>
-      </div>
-    </div>
-
-    <!-- LINE Bot 後台 card -->
-    <div class="module-card" onclick="window.open('https://line-bot-production-cb18.up.railway.app/','_blank')">
-      <div class="lb-card-body">
-        <div class="unified-title">LINE Bot</div>
-        <div class="unified-sub">CHAT BOT ADMIN</div>
-      </div>
-      <div class="unified-footer">
-        <span class="unified-tag tag-line">LINE</span>
-        <span class="unified-tag tag-violet">CMS</span>
-      </div>
-    </div>
-
-    <!-- 贈品設定生成器 -->
-    <div class="module-card" onclick="window.open('https://muttagiftbuilder-production.up.railway.app/','_blank')">
-      <div class="gift-card-body">
-        <div class="unified-title">贈品設定</div>
-        <div class="unified-sub">GIFT BUILDER</div>
-      </div>
-      <div class="unified-footer gift-footer">
-        <span class="unified-tag tag-gift">滿額贈</span>
-        <span class="unified-tag tag-gtm">GTM</span>
-      </div>
-    </div>
-
-    <!-- 快速連結 -->
-    <div class="links-wrap" id="linksWrap"></div>
-
-  </div>
-
-  <!-- Right: Brand Gallery -->
-  <div class="gallery-wrap">
-    <div class="gallery-header">
-      <span class="gallery-title">Brand Gallery</span>
-    </div>
-    <div class="gallery-grid" id="galleryGrid"></div>
-  </div>
-
+<!-- 字卡設定 -->
+<div class="inspector" id="cardInspector">
+  <div class="insp-h">字卡設定 <span class="x" data-close="card">✕</span></div>
+  <label class="toggle"><input type="checkbox" id="cVisible" checked> 在主頁顯示</label>
+  <div class="fld"><label>ICON</label><input type="text" id="cIcon" maxlength="3"></div>
+  <div class="fld"><label>大標題</label><input type="text" id="cTitle"></div>
+  <div class="fld"><label>小標題</label><input type="text" id="cSub"></div>
+  <div class="row2"><div class="fld"><label>框格 1</label><input type="text" id="cTag1"></div><div class="fld"><label>框格 2</label><input type="text" id="cTag2"></div></div>
+  <div class="fld"><label>背光顏色</label><div class="colorrow"><input type="color" id="cAccent"><span style="font-family:var(--fm);font-size:11px;color:#7f8ea2" id="cAccentHex"></span></div></div>
+  <div class="fld"><label>連結網址</label><input type="url" id="cHref" placeholder="https://..."></div>
+  <button class="insp-del" id="cDel">刪除這張字卡</button>
 </div>
+
+<!-- 長條設定 -->
+<div class="inspector" id="barInspector">
+  <div class="insp-h">長條設定 <span class="x" data-close="bar">✕</span></div>
+  <div class="fld"><label>主標題</label><input type="text" id="bTitle"></div>
+  <div class="fld"><label>連結網址</label><input type="url" id="bHref" placeholder="https://..."></div>
+  <div class="fld"><label>背光顏色</label><div class="colorrow"><input type="color" id="bAccent"><span style="font-family:var(--fm);font-size:11px;color:#7f8ea2" id="bAccentHex"></span></div></div>
+  <button class="insp-del" id="bDel">刪除這個長條</button>
+</div>
+
+<!-- 文字框工具列 -->
+<div class="ttoolbar" id="ttoolbar">
+  <div class="tgrp"><span class="tlabel">字級</span><input type="range" id="tsize" min="10" max="96" value="30"><input type="number" id="tsizeN" min="10" max="200" value="30"></div>
+  <div class="tsep"></div>
+  <div class="tgrp">
+    <button class="tbtn" id="tB">B</button>
+    <button class="tbtn" data-ta="left">⇤</button><button class="tbtn" data-ta="center">≡</button><button class="tbtn" data-ta="right">⇥</button>
+    <input type="color" id="tcolor" value="#eaf0f7"><button class="tbtn" id="tAuto">自動</button>
+  </div>
+  <div class="tsep"></div>
+  <div class="tgrp"><span class="tlabel">底</span><button class="tbtn" data-tbg="none">無</button><button class="tbtn" data-tbg="glass">玻璃</button><button class="tbtn" data-tbg="white">白</button></div>
+  <div class="tsep"></div>
+  <button class="tbtn danger" id="tDel">🗑</button>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script src="/static/js/main.js"></script>
 </body>
