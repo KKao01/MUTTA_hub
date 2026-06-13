@@ -4,8 +4,8 @@ const uid = () => Math.random().toString(36).slice(2, 8);
 const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ROWS = 3, COLS = 7, MAXBARS = 5;
 
-let cards = [], bars = [], texts = [], background = { type: 'video', video: '/static/bg.mp4', darken: 50 };
-let token = '', selCard = null, selBar = null, selText = null;
+let cards = [], bars = [], background = { type: 'video', video: '/static/bg.mp4', darken: 50 };
+let token = '', selCard = null, selBar = null;
 const editing = () => document.body.classList.contains('editing');
 
 // ── 時鐘 ──
@@ -25,10 +25,10 @@ $('#hubLogo').addEventListener('click', () => {
 async function load() {
   try {
     const cfg = await (await fetch('/api/config')).json();
-    cards = cfg.cards || []; bars = cfg.bars || []; texts = cfg.texts || [];
+    cards = cfg.cards || []; bars = cfg.bars || [];
     background = cfg.background || background;
   } catch (e) { console.error('載入失敗', e); }
-  renderBackground(); renderGrid(); renderBars(); renderTexts();
+  renderBackground(); renderGrid(); renderBars();
 }
 
 // ── 背景 ──
@@ -105,7 +105,7 @@ let dragBarId = null;
 function renderBars() {
   barRow.innerHTML = '';
   for (let col = 1; col <= MAXBARS; col++) {
-    const cell = document.createElement('div'); cell.className = 'bar-cell'; cell.style.gridArea = '1 / ' + col; cell.textContent = '＋';
+    const cell = document.createElement('div'); cell.className = 'bar-cell'; cell.style.gridColumn = col; cell.textContent = '＋';
     cell.addEventListener('dragover', e => { e.preventDefault(); cell.classList.add('over'); });
     cell.addEventListener('dragleave', () => cell.classList.remove('over'));
     cell.addEventListener('drop', e => { e.preventDefault(); cell.classList.remove('over'); dropBar(col); });
@@ -114,7 +114,7 @@ function renderBars() {
   bars.forEach(b => {
     const a = document.createElement('a');
     a.className = 'bar' + (selBar === b.id ? ' sel' : '');
-    a.style.gridArea = '1 / ' + b.col; a.style.setProperty('--a', b.accent);
+    a.style.gridColumn = b.col; a.style.setProperty('--a', b.accent);
     a.href = b.href || '#'; if (!editing()) a.target = '_blank'; a.rel = 'noopener';
     a.dataset.id = b.id; a.draggable = editing();
     a.innerHTML = `<span class="bar-title">${esc(b.title)}</span><span class="bar-arrow">↗</span>`;
@@ -166,78 +166,7 @@ document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click
   cardInsp.classList.remove('show'); barInsp.classList.remove('show'); selCard = selBar = null; markSelCard(); markSelBar();
 }));
 
-// ── 文字框（自由定位、可編輯）──
-const textlayer = $('#textlayer'), ttoolbar = $('#ttoolbar');
-const tsize = $('#tsize'), tsizeN = $('#tsizeN'), tB = $('#tB'), tcolor = $('#tcolor'), tAuto = $('#tAuto');
-function autoColor(tone, bg) {
-  if (bg === 'white') return tone === 'strong' ? '#0b1220' : tone === 'mid' ? '#5a6678' : '#8a96a8';
-  return tone === 'strong' ? '#EAF0F7' : tone === 'mid' ? '#c2cdda' : '#9fb0c4';
-}
-const rtcolor = t => t.c || autoColor(t.tone, t.bg);
-const curText = () => texts.find(x => x.id === selText);
-function renderTexts() {
-  textlayer.innerHTML = '';
-  texts.forEach(t => {
-    const box = document.createElement('div');
-    box.className = 'tbox bg-' + t.bg + (selText === t.id ? ' sel' : '');
-    box.style.left = t.x + '%'; box.style.top = t.y + '%';
-    const grip = document.createElement('div'); grip.className = 'grip'; grip.textContent = '⠿ 拖曳移動';
-    const txt = document.createElement('div'); txt.className = 'txt';
-    txt.contentEditable = editing() ? 'plaintext-only' : 'false';
-    txt.textContent = t.t; txt.style.fontSize = t.size + 'px'; txt.style.fontWeight = t.w; txt.style.textAlign = t.a; txt.style.color = rtcolor(t);
-    txt.addEventListener('focus', () => selectText(t.id));
-    txt.addEventListener('input', () => { t.t = txt.textContent; });
-    grip.addEventListener('pointerdown', e => startDragText(e, t));
-    box.append(grip, txt); textlayer.appendChild(box);
-  });
-}
-function startDragText(e, t) {
-  e.preventDefault(); selectText(t.id);
-  const rect = textlayer.getBoundingClientRect(); const idx = texts.indexOf(t);
-  const move = ev => {
-    t.x = Math.max(3, Math.min(97, (ev.clientX - rect.left) / rect.width * 100));
-    t.y = Math.max(3, Math.min(97, (ev.clientY - rect.top) / rect.height * 100));
-    const el = textlayer.children[idx]; if (el) { el.style.left = t.x + '%'; el.style.top = t.y + '%'; }
-  };
-  const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); };
-  document.addEventListener('pointermove', move); document.addEventListener('pointerup', up);
-}
-function selectText(id) {
-  if (!editing()) return;
-  selText = id; selCard = selBar = null; cardInsp.classList.remove('show'); barInsp.classList.remove('show');
-  document.querySelectorAll('.tbox').forEach((b, i) => b.classList.toggle('sel', texts[i] && texts[i].id === id));
-  const t = curText(); if (!t) return;
-  tsize.value = Math.min(96, t.size); tsizeN.value = t.size; tB.classList.toggle('on', t.w >= 700);
-  document.querySelectorAll('[data-ta]').forEach(b => b.classList.toggle('on', b.dataset.ta === t.a));
-  document.querySelectorAll('[data-tbg]').forEach(b => b.classList.toggle('on', b.dataset.tbg === t.bg));
-  tcolor.value = rtcolor(t); tAuto.classList.toggle('on', !t.c);
-  ttoolbar.classList.add('show');
-}
-function applyText() {
-  const t = curText(); if (!t) return; const el = textlayer.children[texts.indexOf(t)]; if (!el) return;
-  el.className = 'tbox bg-' + t.bg + ' sel'; el.style.left = t.x + '%'; el.style.top = t.y + '%';
-  const txt = el.querySelector('.txt'); txt.style.fontSize = t.size + 'px'; txt.style.fontWeight = t.w; txt.style.textAlign = t.a; txt.style.color = rtcolor(t);
-}
-tsize.addEventListener('input', () => { const t = curText(); if (!t) return; t.size = +tsize.value; tsizeN.value = tsize.value; applyText(); });
-tsizeN.addEventListener('input', () => { const t = curText(); if (!t) return; const v = Math.max(10, Math.min(200, +tsizeN.value || 10)); t.size = v; tsize.value = Math.min(96, v); applyText(); });
-tB.addEventListener('click', () => { const t = curText(); if (!t) return; const on = t.w < 700; t.w = on ? 700 : 400; tB.classList.toggle('on', on); applyText(); });
-document.querySelectorAll('[data-ta]').forEach(b => b.addEventListener('click', () => { const t = curText(); if (!t) return; t.a = b.dataset.ta; document.querySelectorAll('[data-ta]').forEach(x => x.classList.toggle('on', x === b)); applyText(); }));
-document.querySelectorAll('[data-tbg]').forEach(b => b.addEventListener('click', () => { const t = curText(); if (!t) return; t.bg = b.dataset.tbg; document.querySelectorAll('[data-tbg]').forEach(x => x.classList.toggle('on', x === b)); tcolor.value = rtcolor(t); applyText(); }));
-tcolor.addEventListener('input', () => { const t = curText(); if (!t) return; t.c = tcolor.value; tAuto.classList.remove('on'); applyText(); });
-tAuto.addEventListener('click', () => { const t = curText(); if (!t) return; t.c = null; tAuto.classList.add('on'); tcolor.value = rtcolor(t); applyText(); });
-$('#tDel').addEventListener('click', () => { texts = texts.filter(x => x.id !== selText); selText = null; ttoolbar.classList.remove('show'); renderTexts(); });
-document.addEventListener('pointerdown', e => {
-  if (!editing() || !selText) return;
-  if (e.target.closest('.tbox') || e.target.closest('.ttoolbar')) return;
-  selText = null; ttoolbar.classList.remove('show'); document.querySelectorAll('.tbox').forEach(b => b.classList.remove('sel'));
-});
-
 // ── 新增 ──
-$('#addText').addEventListener('click', () => {
-  const t = { id: uid(), t: '新的文字', x: 50, y: 42, size: 24, w: 700, a: 'center', c: null, tone: 'mid', bg: 'none' };
-  texts.push(t); renderTexts(); selectText(t.id);
-  const el = textlayer.children[texts.length - 1]; if (el) el.querySelector('.txt').focus();
-});
 $('#addCard').addEventListener('click', () => {
   let spot = null; for (let r = 1; r <= ROWS && !spot; r++) for (let c = 1; c <= COLS && !spot; c++) if (!cardAt(r, c)) spot = { r, c };
   if (!spot) { toast('字卡格滿了（3×7）'); return; }
@@ -265,8 +194,8 @@ async function doEditLogin() {
     token = pw; $('#editLogin').classList.remove('show'); enterEdit();
   } catch (e) { $('#elErr').textContent = '連線錯誤'; }
 }
-function enterEdit() { document.body.classList.add('editing'); renderGrid(); renderBars(); renderTexts(); }
-function exitEdit() { document.body.classList.remove('editing'); selCard = selBar = selText = null; cardInsp.classList.remove('show'); barInsp.classList.remove('show'); ttoolbar.classList.remove('show'); renderGrid(); renderBars(); renderTexts(); }
+function enterEdit() { document.body.classList.add('editing'); renderGrid(); renderBars(); }
+function exitEdit() { document.body.classList.remove('editing'); selCard = selBar = null; cardInsp.classList.remove('show'); barInsp.classList.remove('show'); renderGrid(); renderBars(); }
 $('#doneBtn').addEventListener('click', exitEdit);
 
 // ── 儲存 ──
@@ -274,7 +203,7 @@ $('#saveBtn').addEventListener('click', async () => {
   try {
     const res = await fetch('/api/dev/layout', {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Dev-Token': token },
-      body: JSON.stringify({ cards, bars, texts })
+      body: JSON.stringify({ cards, bars })
     });
     if (res.ok) toast('✓ 已儲存'); else if (res.status === 401) toast('登入過期，請重新進入編輯');
     else toast('儲存失敗');

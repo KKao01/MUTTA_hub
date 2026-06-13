@@ -8,17 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 BASE_DIR    = Path(__file__).parent.parent
+CONFIG_PATH = BASE_DIR / "config.json"
 STATIC_DIR  = BASE_DIR / "static"
-# 持久化資料夾：在 Railway 掛一個 Volume 後，設環境變數 DATA_DIR=/data 指向它。
-# 沒設 DATA_DIR 時退回 repo 根目錄（本機開發照舊）。
-DATA_DIR    = Path(os.environ.get("DATA_DIR", str(BASE_DIR)))
-MEDIA_DIR   = DATA_DIR / "media"
-CONFIG_PATH = DATA_DIR / "config.json"
-REPO_CONFIG = BASE_DIR / "config.json"   # 隨程式打包的種子設定（保留已 commit 的密碼/版面）
 MAX_BG_MB   = 20
-
-DATA_DIR.mkdir(parents=True, exist_ok=True)
-MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_CONFIG = {
     "password_hash": "ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270",
@@ -33,9 +25,6 @@ DEFAULT_CONFIG = {
     "bars": [
         {"id": "b1", "col": 1, "title": "MeepShop 後台", "href": "https://admin.meepshop.tw/", "accent": "#8fb6ff"},
         {"id": "b2", "col": 2, "title": "順豐寄件",       "href": "https://www.sf-express.com", "accent": "#8fb6ff"}
-    ],
-    "texts": [
-        {"id": "t1", "t": "KKAO x Mutta", "x": 50, "y": 28, "size": 30, "w": 700, "a": "center", "c": None, "tone": "mid", "bg": "none"}
     ]
 }
 
@@ -48,17 +37,8 @@ def load_config():
             return cfg
         except Exception:
             pass
-    # 第一次：優先用 repo 內已 commit 的 config.json 當種子（保留密碼/版面），否則用預設
-    seed = None
-    if REPO_CONFIG.exists() and REPO_CONFIG.resolve() != CONFIG_PATH.resolve():
-        try:
-            seed = json.loads(REPO_CONFIG.read_text(encoding="utf-8"))
-        except Exception:
-            seed = None
-    cfg = seed if seed else json.loads(json.dumps(DEFAULT_CONFIG))
-    for k, v in DEFAULT_CONFIG.items():
-        cfg.setdefault(k, v)
-    save_config(cfg)
+    cfg = json.loads(json.dumps(DEFAULT_CONFIG))
+    CONFIG_PATH.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
     return cfg
 
 def save_config(cfg: dict):
@@ -75,7 +55,6 @@ def require_dev(request: Request):
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-app.mount("/media", StaticFiles(directory=str(MEDIA_DIR)), name="media")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 # ── Pages ──
@@ -95,7 +74,6 @@ async def get_config():
         "background": cfg.get("background", DEFAULT_CONFIG["background"]),
         "cards": cfg.get("cards", []),
         "bars": cfg.get("bars", []),
-        "texts": cfg.get("texts", []),
     }
 
 # ── Dev API ──
@@ -106,7 +84,7 @@ async def dev_login(password: str = Form(...)):
         raise HTTPException(401, "密碼錯誤")
     return {"ok": True, "token": password}
 
-def _sanitize_layout(cards, bars, texts):
+def _sanitize_layout(cards, bars):
     clean_cards = []
     for k in (cards or [])[:21]:
         clean_cards.append({
@@ -131,33 +109,17 @@ def _sanitize_layout(cards, bars, texts):
             "href": str(b.get("href", ""))[:500],
             "accent": str(b.get("accent", "#8fb6ff"))[:9],
         })
-    clean_texts = []
-    for t in (texts or [])[:20]:
-        c = t.get("c")
-        clean_texts.append({
-            "id": str(t.get("id", ""))[:40] or os.urandom(3).hex(),
-            "t": str(t.get("t", ""))[:200],
-            "x": max(0.0, min(100.0, float(t.get("x", 50)))),
-            "y": max(0.0, min(100.0, float(t.get("y", 50)))),
-            "size": max(8, min(200, int(t.get("size", 22)))),
-            "w": 700 if int(t.get("w", 400)) >= 700 else 400,
-            "a": t.get("a") if t.get("a") in ("left", "center", "right") else "center",
-            "c": (str(c)[:9] if c else None),
-            "tone": t.get("tone") if t.get("tone") in ("strong", "mid", "soft") else "mid",
-            "bg": t.get("bg") if t.get("bg") in ("none", "glass", "white") else "none",
-        })
-    return clean_cards, clean_bars, clean_texts
+    return clean_cards, clean_bars
 
 @app.post("/api/dev/layout")
 async def save_layout(request: Request, _=Depends(require_dev)):
     body = await request.json()
-    cards, bars, texts = _sanitize_layout(body.get("cards"), body.get("bars"), body.get("texts"))
+    cards, bars = _sanitize_layout(body.get("cards"), body.get("bars"))
     cfg = load_config()
     cfg["cards"] = cards
     cfg["bars"] = bars
-    cfg["texts"] = texts
     save_config(cfg)
-    return {"ok": True, "cards": len(cards), "bars": len(bars), "texts": len(texts)}
+    return {"ok": True, "cards": len(cards), "bars": len(bars)}
 
 @app.post("/api/dev/background")
 async def set_background(request: Request, _=Depends(require_dev)):
@@ -196,14 +158,14 @@ async def upload_background_video(request: Request, file: UploadFile = File(...)
         if size > limit:
             raise HTTPException(413, f"影片太大。請先用本機工具壓到 {MAX_BG_MB} MB 以下再上傳。")
         chunks.append(chunk)
-    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
-    (MEDIA_DIR / "bg.mp4").write_bytes(b"".join(chunks))
+    STATIC_DIR.mkdir(parents=True, exist_ok=True)
+    (STATIC_DIR / "bg.mp4").write_bytes(b"".join(chunks))
     cfg = load_config()
     bg = cfg.get("background", {}) or {}
-    bg["type"] = "video"; bg["video"] = "/media/bg.mp4"; bg.setdefault("darken", 50)
+    bg["type"] = "video"; bg["video"] = "/static/bg.mp4"; bg.setdefault("darken", 50)
     cfg["background"] = bg
     save_config(cfg)
-    return {"ok": True, "url": "/media/bg.mp4", "size": size}
+    return {"ok": True, "url": "/static/bg.mp4", "size": size}
 
 @app.post("/api/dev/change-password")
 async def change_password(request: Request, _=Depends(require_dev)):
