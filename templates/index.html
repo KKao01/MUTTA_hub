@@ -13,13 +13,13 @@
 
 <div id="bgRoot"></div>
 <div class="bg-overlay" id="bgOverlay"></div>
-
-<button class="edit-fab" id="editFab">✎ 編輯</button>
+<div class="textlayer" id="textlayer"></div>
 
 <div class="editbar" id="editbar">
   <button class="eb-done" id="doneBtn">✓ 完成</button>
   <span class="eb-title">編輯模式</span>
   <div class="eb-actions">
+    <button id="addText">＋ 文字框</button>
     <button id="addCard">＋ 字卡</button>
     <button id="addBar">＋ 長條</button>
     <button class="eb-save" id="saveBtn">⤓ 儲存</button>
@@ -37,6 +37,7 @@
   <div class="status">
     <span class="pulse"></span><span class="online">ONLINE</span>
     <span class="clock" id="clock">00:00:00</span>
+    <button class="edit-fab" id="editFab">✎ 編輯</button>
   </div>
 </header>
 
@@ -76,6 +77,21 @@
   <div class="fld"><label>連結網址</label><input type="url" id="bHref" placeholder="https://..."></div>
   <div class="fld"><label>背光顏色</label><div class="colorrow"><input type="color" id="bAccent"><span style="font-family:var(--fm);font-size:11px;color:#7f8ea2" id="bAccentHex"></span></div></div>
   <button class="insp-del" id="bDel">刪除這個長條</button>
+</div>
+
+<!-- 文字框工具列 -->
+<div class="ttoolbar" id="ttoolbar">
+  <div class="tgrp"><span class="tlabel">字級</span><input type="range" id="tsize" min="10" max="96" value="30"><input type="number" id="tsizeN" min="10" max="200" value="30"></div>
+  <div class="tsep"></div>
+  <div class="tgrp">
+    <button class="tbtn" id="tB">B</button>
+    <button class="tbtn" data-ta="left">⇤</button><button class="tbtn" data-ta="center">≡</button><button class="tbtn" data-ta="right">⇥</button>
+    <input type="color" id="tcolor" value="#eaf0f7"><button class="tbtn" id="tAuto">自動</button>
+  </div>
+  <div class="tsep"></div>
+  <div class="tgrp"><span class="tlabel">底</span><button class="tbtn" data-tbg="none">無</button><button class="tbtn" data-tbg="glass">玻璃</button><button class="tbtn" data-tbg="white">白</button></div>
+  <div class="tsep"></div>
+  <button class="tbtn danger" id="tDel">🗑</button>
 </div>
 
 <div class="toast" id="toast"></div>
