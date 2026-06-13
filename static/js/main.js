@@ -2,6 +2,71 @@
 const $ = s => document.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2, 8);
 const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ── 像素微光 canvas（移植自 21st.dev pixel-logo-grid，純 JS 版）──
+   hover 時一格格像素以背光色從中心往外漣漪亮起並閃爍，移開縮回消失 */
+function lighten(hex, amt) {
+  hex = String(hex || '#8fb6ff').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  let r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
+  if ([r, g, b].some(isNaN)) return hex ? ('#' + hex) : '#8fb6ff';
+  r = Math.round(r + (255 - r) * amt); g = Math.round(g + (255 - g) * amt); b = Math.round(b + (255 - b) * amt);
+  return `rgb(${r},${g},${b})`;
+}
+function attachPixelCanvas(card, accent) {
+  if (window.matchMedia('(hover: none)').matches) return; // 觸控裝置不掛
+  const canvas = document.createElement('canvas');
+  canvas.className = 'pixel-canvas';
+  card.insertBefore(canvas, card.firstChild);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const gap = 5;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const baseSpeed = reduce ? 0 : 35 * 0.001;
+  const colors = [accent || '#8fb6ff', lighten(accent, 0.45), '#ffffff'];
+  let pixels = [], raf = 0, last = performance.now();
+
+  const mk = (x, y, color, w, h) => {
+    const rnd = (a, b) => Math.random() * (b - a) + a;
+    const dx = x - w / 2, dy = y - h / 2;
+    const p = {
+      x, y, color, size: 0, speed: rnd(0.1, 0.9) * baseSpeed, sizeStep: Math.random() * 0.4,
+      minSize: 0.5, maxSizeInt: 2, maxSize: rnd(0.5, 2), delay: reduce ? 0 : Math.sqrt(dx * dx + dy * dy),
+      counter: 0, counterStep: Math.random() * 4 + (w + h) * 0.01, isIdle: false, isShimmer: false, isReverse: false
+    };
+    p.draw = () => { const o = p.maxSizeInt * 0.5 - p.size * 0.5; ctx.fillStyle = p.color; ctx.fillRect(p.x + o, p.y + o, p.size, p.size); };
+    p.shimmer = () => { if (p.size >= p.maxSize) p.isReverse = true; else if (p.size <= p.minSize) p.isReverse = false; p.size += p.isReverse ? -p.speed : p.speed; };
+    p.appear = () => { p.isIdle = false; if (p.counter <= p.delay) { p.counter += p.counterStep; return; } if (p.size >= p.maxSize) p.isShimmer = true; if (p.isShimmer) p.shimmer(); else p.size += p.sizeStep; p.draw(); };
+    p.disappear = () => { p.isShimmer = false; p.counter = 0; if (p.size <= 0) { p.isIdle = true; return; } p.size -= 0.1; p.draw(); };
+    return p;
+  };
+  const build = () => {
+    const r = card.getBoundingClientRect();
+    const w = Math.floor(r.width), h = Math.floor(r.height);
+    if (w < 4 || h < 4) return;
+    canvas.width = w; canvas.height = h;
+    pixels = [];
+    for (let x = 0; x < w; x += gap) for (let y = 0; y < h; y += gap) pixels.push(mk(x, y, colors[Math.floor(Math.random() * colors.length)], w, h));
+  };
+  const run = mode => {
+    cancelAnimationFrame(raf);
+    const step = 1000 / 60;
+    const loop = () => {
+      raf = requestAnimationFrame(loop);
+      const now = performance.now(), el = now - last;
+      if (el < step) return;
+      last = now - (el % step);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of pixels) p[mode]();
+      if (pixels.every(p => p.isIdle)) cancelAnimationFrame(raf);
+    };
+    raf = requestAnimationFrame(loop);
+  };
+  build();
+  try { new ResizeObserver(build).observe(card); } catch (e) {}
+  card.addEventListener('mouseenter', () => run('appear'));
+  card.addEventListener('mouseleave', () => run('disappear'));
+}
 const ROWS = 3, COLS = 7, MAXBARS = 5;
 
 let cards = [], bars = [], texts = [], background = { type: 'video', video: '/static/bg.mp4', darken: 50 };
@@ -89,6 +154,7 @@ function renderGrid() {
     a.addEventListener('dragstart', () => { dragCardId = k.id; });
     a.addEventListener('click', e => { if (editing()) { e.preventDefault(); selectCard(k.id); } });
     grid.appendChild(a);
+    attachPixelCanvas(a, k.accent);
   });
 }
 function dropCard(r, c) {

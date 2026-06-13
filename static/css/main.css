@@ -164,6 +164,12 @@ body.editing .tbox.sel{ outline: 1px dashed rgba(127,182,255,.5); outline-offset
 #tcolor{ width: 27px; height: 27px; border: 1px solid rgba(255,255,255,.14); border-radius: 7px; background: none; cursor: pointer; padding: 0; }
 .tsep{ width: 1px; height: 18px; background: rgba(255,255,255,.12); }
 
+
+/* ── 像素微光 canvas（hover 效果，桌機）── */
+.card{ overflow: hidden; }
+.pixel-canvas{ position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.card > .mc-top, .card > .mc-titles{ position: relative; z-index: 1; }
+
 /* ════════ 手機版（≤768px）：修正重疊/爆版 ════════ */
 @media (max-width: 768px){
   html, body{ overflow-x: hidden; }
